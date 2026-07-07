@@ -1,832 +1,656 @@
-
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-
-<title>CPG Europe Daily Intelligence</title>
-
-<style>
-
-body {
-    background:#f3f5f7;
-    font-family:Arial,sans-serif;
-    max-width:1200px;
-    margin:auto;
-    padding:25px;
-}
-
-.header {
-    background:#003366;
-    color:white;
-    padding:25px;
-    border-radius:10px;
-    margin-bottom:25px;
-}
-
-.section {
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    margin-bottom:25px;
-    box-shadow:0 1px 5px rgba(0,0,0,0.15);
-}
-
-.story {
-    padding:18px;
-    margin-bottom:15px;
-    border-left:4px solid #003366;
-    background:#fafafa;
-}
-
-.story h3 {
-    margin-top:0;
-}
-
-.story a {
-    text-decoration:none;
-    color:#0056b3;
-}
-
-.story a:hover {
-    text-decoration:underline;
-}
-
-.story p {
-    line-height:1.6;
-    color:#333;
-}
-
-.meta {
-    color:#777;
-    font-size:12px;
-    margin-top:10px;
-}
-
-h1,h2 {
-    margin-top:0;
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPG Europe Daily Intelligence</title>
+    <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --brand: #0f172a;
+            --accent: #2563eb;
+            --border: #e2e8f0;
+            --tag-bg: #f1f5f9;
+        }
+        body {
+            background-color: var(--bg-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+        .navbar {
+            background-color: var(--brand);
+            color: white;
+            padding: 2rem;
+            border-bottom: 4px solid var(--accent);
+        }
+        .navbar-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .navbar h1 { margin: 0; font-size: 1.75rem; font-weight: 700; letter-spacing: -0.025em; }
+        .navbar p { margin: 0.25rem 0 0 0; color: #94a3b8; font-size: 0.95rem; }
+        .meta-badge {
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: monospace;
+            text-align: right;
+        }
+        .main-layout {
+            max-width: 1100px;
+            margin: 2.5rem auto;
+            padding: 0 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+        .section-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px -8px rgba(0,0,0,0.08);
+        }
+        .card-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .tag {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+            background: var(--tag-bg);
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        .tag-priority { background: #eff6ff; color: var(--accent); }
+        .card h3 {
+            margin: 0 0 0.75rem 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        .card h3 a {
+            color: var(--text-main);
+            text-decoration: none;
+        }
+        .card h3 a:hover { color: var(--accent); }
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0 0 1.25rem 0;
+            flex-grow: 1;
+        }
+        .card-footer {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            border-top: 1px solid var(--border);
+            padding-top: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .no-data {
+            color: var(--text-muted);
+            font-style: italic;
+            grid-column: 1 / -1;
+            padding: 2rem;
+            text-align: center;
+            background: var(--surface);
+            border-radius: 8px;
+            border: 1px dashed var(--border);
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="header">
-
-<h1>CPG Europe Daily Intelligence</h1>
-
-<p>
-European FMCG / Consumer Goods Intelligence Newsletter
-</p>
-
-<p>
-Edition Date: 07 July 2026
-<br>
-Updated: 07 Jul 2026 09:28
-</p>
-
+<div class="navbar">
+    <div class="navbar-container">
+        <div>
+            <h1>CPG Europe Daily Intelligence</h1>
+            <p>Strategic Intelligence & Portfolio Insights</p>
+        </div>
+        <div class="meta-badge">
+            Edition: 07 July 2026<br>
+            Sync Time: 07 Jul 2026 14:25 UTC
+        </div>
+    </div>
 </div>
 
-<div class="section">
-<h2>Top Stories</h2>
+<div class="main-layout">
 
-    <div class="story">
+    <section>
+        <div class="section-title">⚡ High-Priority Intelligence Briefing</div>
+        <div class="grid">
 
-        <h3>
-            https://www.esmmagazine.com/retail/nutri-score-market-share-falls-slightly-in-france-in-2025-oqali-315767
-                Nutri-Score Market Share Falls Slightly In France In 2025 – Oqali
-            </a>
-        </h3>
-
-        <p>
-            Nutri-Score’s market penetration edged down in France in 2025, after years of growth, according to Oqali’s latest report.
-        </p>
-
-        <div class="meta">
-            Source: ESM Magazine
+            <div class="card" style="border-top: 4px solid var(--accent);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Top Story</span>
+                        <span class="tag">Europe</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/retail/majid-al-futtaim-unveils-premium-carrefour-market-in-dubai-315705" target="_blank">Majid Al Futtaim Unveils Premium Carrefour Market In Dubai</a></h3>
+                    <p>Carrefour's Middle East franchisee, Majid Al Futtaim, has opened its first premium Carrefour Market outlet in UAE</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--accent);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Top Story</span>
+                        <span class="tag">Europe</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/retail/icelands-hagar-reports-revenue-and-profit-growth-in-q1-2026-27-315576" target="_blank">Iceland’s Hagar Reports Revenue And Profit Growth In Q1 2026/27</a></h3>
+                    <p>Icelandic retailer Hagar reported revenue of ISK 50.8 billion (€352.9 million) for its first quarter 2026/2027 – a 5.5% increase.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--accent);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Top Story</span>
+                        <span class="tag">France</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/supply-chain/carrefour-signs-deals-with-french-organic-farming-producers-314551" target="_blank">Carrefour Signs Deals With French Organic-Farming Producers</a></h3>
+                    <p>Carrefour is reinforcing its support for French organic producers by signing five new sector agreements and renewing key partnerships.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--accent);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Top Story</span>
+                        <span class="tag">Europe</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/retail/john-lewis-money-announces-gerry-mallon-to-board-as-it-seeks-fca-ok-315896" target="_blank">John Lewis Money Announces Gerry Mallon To Board Following FCA Okay</a></h3>
+                    <p>The John Lewis Partnership has appointed Gerry Mallon as independent non-executive director to the board of John Lewis Finance Ltd.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--accent);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Top Story</span>
+                        <span class="tag">Europe</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/retail/sainsburys-launches-partner-led-financial-brand-sainsburys-money-315786" target="_blank">Sainsbury’s Launches Partner-Led Financial Brand Sainsbury’s Money</a></h3>
+                    <p>Sainsbury’s launches Sainsbury’s Money, completing its shift to a partner-led financial services model.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--accent);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Top Story</span>
+                        <span class="tag">France</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/retail/nutri-score-market-share-falls-slightly-in-france-in-2025-oqali-315767" target="_blank">Nutri-Score Market Share Falls Slightly In France In 2025 – Oqali</a></h3>
+                    <p>Nutri-Score’s market penetration edged down in France in 2025, after years of growth, according to Oqali’s latest report.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--accent);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Top Story</span>
+                        <span class="tag">Europe</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/retail/carrefour-brasil-to-deploy-solar-power-systems-across-54-stores-315056" target="_blank">Carrefour Brasil To Deploy Solar Power Systems Across 54 Stores</a></h3>
+                    <p>Carrefour Brasil has signed a contract with GreenYellow energy transition to instal solar power systems in 54 of its stores.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--accent);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Top Story</span>
+                        <span class="tag">Europe</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/retail/denmarks-dagrofa-to-acquire-discount-chain-abc-lavpris-315812" target="_blank">Denmark’s Dagrofa To Acquire Discount Chain ABC Lavpris</a></h3>
+                    <p>Danish grocery group Dagrofa, a NorgesGruppen affiliate, has announced the acquisition of discount supermarket chain ABC Lavpris.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--accent);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Top Story</span>
+                        <span class="tag">Europe</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/retail/edeka-nst-sees-growth-in-full-year-retail-sales-following-investment-programme-315800" target="_blank">Edeka NST Sees Growth In Full-Year Retail Sales Following Investment Programme</a></h3>
+                    <p>Edeka NST has reported 2.4% year-on-year increase in retail sales, to €5.52 billion, driven by its investment strategy in FY 2025.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--accent);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Top Story</span>
+                        <span class="tag">France</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/retail/cooperative-u-sees-strongest-growth-online-channel-most-dynamic-in-france-worldpanel-315761" target="_blank">Coopérative U Sees Strongest Growth, Online Channel Most Dynamic In France – Worldpanel</a></h3>
+                    <p>Online emerged as the most dynamic channel in France’s grocery sector and Coopérative U saw the strongest growth in the market.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                </div>
+            </div>
         </div>
+    </section>
 
-    </div>
+    <section>
+        <div class="section-title">📍 Market Overviews by Country</div>
+
+        <h3 style="margin: 1.5rem 0 1rem 0; font-size: 1.2rem; color: var(--text-muted);">United Kingdom</h3>
+        <div class="grid" style="margin-bottom: 2rem;">
     
-    <div class="story">
-
-        <h3>
-            https://www.esmmagazine.com/retail/majid-al-futtaim-unveils-premium-carrefour-market-in-dubai-315705
-                Majid Al Futtaim Unveils Premium Carrefour Market In Dubai
-            </a>
-        </h3>
-
-        <p>
-            Carrefour's Middle East franchisee, Majid Al Futtaim, has opened its first premium Carrefour Market outlet in UAE
-        </p>
-
-        <div class="meta">
-            Source: ESM Magazine
-        </div>
-
-    </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/retail/uks-ocado-says-ceo-steiner-to-stay-in-role-through-2028-315956" target="_blank">UK's Ocado Says CEO Steiner To Stay In Role Through 2028</a></h3>
+                        <p>Britain's Ocado said Tim Steiner would continue to serve as chief executive until the start of the 2028 financial year.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/retail/asda-appoints-helen-connolly-as-ceo-of-fashion-brand-george-315775" target="_blank">Asda Appoints Helen Connolly As CEO Of Fashion Brand George</a></h3>
+                        <p>UK retailer Asda has appointed Helen Connolly as chief executive officer of George, its fashion and homeware brand.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/private-label/uks-mcbride-warns-profit-to-miss-expectations-as-iran-war-drives-up-input-costs-314089" target="_blank">UK's McBride Warns Profit To Miss Expectations As Iran War Drives Up Input Costs</a></h3>
+                        <p>Private-label manufacturer McBride warns FY26/FY27 profits will miss market views by 5%-10% as Iran war costs squeeze margins.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/a-brands/marmite-turns-into-wemite-for-englands-world-cup-campaign-315728" target="_blank">Marmite Turns Into ‘WeMite’ For England's World Cup Campaign</a></h3>
+                        <p>Marmite has temporarily swapped its name for ‘WeMite’ after England 'Kane'-d their way into the World Cup round of 16.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/fresh-produce/waitrose-first-supermarket-with-year-round-british-samphire-314552" target="_blank">Waitrose First Supermarket To Offer Year-Round British Samphire</a></h3>
+                        <p>UK retailer Waitrose is offering British-grown samphire year round, highlighting its commitment to British agriculture.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/technology/ai-drives-product-discovery-among-uk-shoppers-but-79-double-check-recommendations-315531" target="_blank">AI Drives Product Discovery Among UK Shoppers, But 79% Double-Check Recommendations</a></h3>
+                        <p>More than half (52%) of UK consumers who use AI tools like ChatGPT say the technology makes it easier to discover new brands.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                    </div>
+                </div></div>
+        <h3 style="margin: 1.5rem 0 1rem 0; font-size: 1.2rem; color: var(--text-muted);">France</h3>
+        <div class="grid" style="margin-bottom: 2rem;">
     
-    <div class="story">
-
-        <h3>
-            https://www.esmmagazine.com/retail/icelands-hagar-reports-revenue-and-profit-growth-in-q1-2026-27-315576
-                Iceland’s Hagar Reports Revenue And Profit Growth In Q1 2026/27
-            </a>
-        </h3>
-
-        <p>
-            Icelandic retailer Hagar reported revenue of ISK 50.8 billion (€352.9 million) for its first quarter 2026/2027 – a 5.5% increase.
-        </p>
-
-        <div class="meta">
-            Source: ESM Magazine
-        </div>
-
-    </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">Dairy & Yogurt</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/fresh-produce/sodiaal-reports-revenue-of-e6-2bn-in-fy-2025-315683" target="_blank">Sodiaal Reports Revenue Of €6.2bn In FY 2025</a></h3>
+                        <p>French dairy cooperative Sodiaal has reported consolidated revenue of €6.2 billion in its financial year 2025, according to its latest report.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/supply-chain/french-maize-crop-ratings-plunge-to-13-year-low-in-heatwave-315745" target="_blank">French Maize Crop Ratings Plunge To 13-Year Low In Heatwave</a></h3>
+                        <p>Summary unavailable.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/supply-chain/drought-threatens-french-sugar-beet-crop-with-no-rain-in-sight-315484" target="_blank">Drought Threatens French Sugar Beet Crop With No Rain In Sight</a></h3>
+                        <p>A prolonged drought is threatening sugar output in France with no rain forecast in key beet regions over the next two weeks, growers said.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://news.google.com/rss/articles/CBMimAFBVV95cUxQR2JsT213VUlMRUQzTUt5Y1dycEJzb2pVYURvS3d3aWxIUl9CR2lEejFVUV90Y1l0TXlIZ0VHNG5WRGRDSDNVS1VfdmdRcndqSXBHRUxhTjY5dktScl9aZnlDa1JQUW9MN2ttTk1SbnFNSnJVcVRucEpfRldvR0c0cWlqZTE0OUJBbnp5YXZXV1BsRGNsNER4TQ?oc=5" target="_blank">Volume of hard seltzer in France 2020-2030 - Statista</a></h3>
+                        <p>Volume of hard seltzer in France 2020-2030&nbsp;&nbsp;Statista</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: "France FMCG when:1d" - Google News</span>
+                    </div>
+                </div></div>
+        <h3 style="margin: 1.5rem 0 1rem 0; font-size: 1.2rem; color: var(--text-muted);">Germany</h3>
+        <div class="grid" style="margin-bottom: 2rem;">
     
-    <div class="story">
-
-        <h3>
-            https://www.esmmagazine.com/retail/sainsburys-launches-partner-led-financial-brand-sainsburys-money-315786
-                Sainsbury’s Launches Partner-Led Financial Brand Sainsbury’s Money
-            </a>
-        </h3>
-
-        <p>
-            Sainsbury’s launches Sainsbury’s Money, completing its shift to a partner-led financial services model.
-        </p>
-
-        <div class="meta">
-            Source: ESM Magazine
-        </div>
-
-    </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/private-label/tradition-meets-innovation-kuchenmeister-brings-german-quality-to-seoul-food-hotel-313440" target="_blank">Tradition Meets Innovation – KuchenMeister Brings ‘German Quality’ To Seoul Food & Hotel</a></h3>
+                        <p>KuchenMeister GmbH presents its diverse portfolio of fine baked goods at the Seoul Food & Hotel exhibition.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/fresh-produce/cherries-on-top-german-harvest-expected-to-rise-to-51100-tonnes-in-2026-315323" target="_blank">Cherries On Top – German Harvest Expected To Rise To 51,100 Tonnes In 2026</a></h3>
+                        <p>The 2026 cherry harvest in Germany is expected to reach around 51,100 tonnes, representing an increase of 8.5%, as per Destatis.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/supply-chain/germanys-top-diplomat-says-eu-mercosur-deal-still-has-issues-to-resolve-315571" target="_blank">Germany's Top Diplomat Says EU-Mercosur Deal Still Has Issues To Resolve</a></h3>
+                        <p>Germany's Johann Wadephul said there were still "issues" to resolve before the EU's trade agreement with the Mercosur bloc can be ratif...</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://news.google.com/rss/articles/CBMikAFBVV95cUxNR3VvSTl6MkthbHdXYkJHMGl3bERqXy14Y25FbFpEdWNGbnhSSVM3c2dfWUdGZDBjTTBnWjRZR1hXSWRUbUdXQlliTUMxZEZYZklxVld3Z1J0SmdTQnk5bzJMS2Fqc2FvWnRnaklfaVFwZVVKQUhvYXcwcEQyUFN2Z1VRRDNfUm1Za2FzNGI1OXY?oc=5" target="_blank">Revenue of the wine industry in Germany from 2018 to 2030 - Statista</a></h3>
+                        <p>Revenue of the wine industry in Germany from 2018 to 2030&nbsp;&nbsp;Statista</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: "Germany FMCG when:1d" - Google News</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://news.google.com/rss/articles/CBMihgFBVV95cUxOM3hTakZIRUhXOUZIcU5xRzhPWXFJLWJYZnJLQTZMeDdzbXVxN2hiTDUwZGpBd0g5c1h5dFJmdlY3d05KWEg1VmhQTEtSQWQtTXpCVE1Ya2QtT3ljZi1Dam1CVVE5MEtqMjVSUGVvTldObDdxbHNNbmRsQkE5alVjcVdlbVFvZw?oc=5" target="_blank">Germany Manufacturing Production May 2026: +0.9% Month-on-Month | Destatis - News and Statistics - IndexBox</a></h3>
+                        <p>Germany Manufacturing Production May 2026: +0.9% Month-on-Month | Destatis - News and Statistics&nbsp;&nbsp;IndexBox</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: "Germany FMCG when:1d" - Google News</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://news.google.com/rss/articles/CBMiogFBVV95cUxPLVA2aFptM1hqN2QyMFlvcFBrWS0wM3BSZ29mU3ZiY00tU1YxZzA4LVpTQ0QzV1ljd0phcDlabWtyOEZoVWVmOTF3LUpWMlA4UC15S3RSU3NKTkFRc3pxMEVXbGdFTklHRkJxRUtwTFlJSDhhYXA4REVuVjZDX05Vb0pMWU11VlFGRWVfcUNLOVVjeW1ndm9VNkRUVkcxYkNBTFE?oc=5" target="_blank">German Industrial Output Rises More Than Expected - TradingView</a></h3>
+                        <p>German Industrial Output Rises More Than Expected&nbsp;&nbsp;TradingView</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: "Germany FMCG when:1d" - Google News</span>
+                    </div>
+                </div></div>
+        <h3 style="margin: 1.5rem 0 1rem 0; font-size: 1.2rem; color: var(--text-muted);">Netherlands</h3>
+        <div class="grid" style="margin-bottom: 2rem;">
     
-    <div class="story">
-
-        <h3>
-            https://www.esmmagazine.com/retail/john-lewis-money-announces-gerry-mallon-to-board-as-it-seeks-fca-ok-315896
-                John Lewis Money Announces Gerry Mallon To Board As It Seeks FCA OK
-            </a>
-        </h3>
-
-        <p>
-            The John Lewis Partnership has appointed Gerry Mallon as independent non-executive director to the board of John Lewis Finance Ltd.
-        </p>
-
-        <div class="meta">
-            Source: ESM Magazine
-        </div>
-
-    </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/retail/dutch-food-manufacturers-make-progress-on-salt-fat-and-sugar-reduction-fnli-315794" target="_blank">Dutch Food Manufacturers Make Progress On Salt, Fat And Sugar Reduction – FNLI</a></h3>
+                        <p>Dutch processed foods are making steady cuts in salt, sugar and saturated fats, with manufacturers on track for 2030 targets.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/retail/ahold-delhaizes-wouter-kolk-talks-to-esm-as-he-departs-the-dutch-retailer-273866" target="_blank">Ahold Delhaize's Wouter Kolk Talks To ESM As He Departs The Dutch Retailer</a></h3>
+                        <p>ESM catches up with Wouter Kolk as he steps down from the role of CEO of Ahold Delhaize Europe & Indonesia.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/supply-chain/jumbo-switches-own-brand-quinoa-to-100-organic-dutch-grown-315881" target="_blank">Jumbo Switches Own-Brand Quinoa To 100% Organic Dutch Grown</a></h3>
+                        <p>Dutch retailer Jumbo Supermarkten has transitioned its own-brand quinoa to an exclusively organic, Dutch-grown supply.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/supply-chain/vion-food-group-to-sell-food-service-business-unit-315748" target="_blank">Vion Food Group To Sell Food Service Business Unit</a></h3>
+                        <p>Dutch meat producer Vion Food Group has agreed to sell its Food Service business to Dutch firm Group of Butchers.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/supply-chain/jumbo-opens-electric-vehicle-fast-charging-hub-at-nieuwegein-315665" target="_blank">Jumbo Opens Electric Vehicle Fast-Charging Hub At Nieuwegein</a></h3>
+                        <p>Dutch retailer Jumbo has opened a new fast-charging hub for electric vehicles at its central distribution centre in Nieuwegein.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://news.google.com/rss/articles/CBMilAFBVV95cUxQZmktX3owWGRzYnRmYjhqaDE4REJkYUVXYjZoREJFMDdkOEY5WlppZWFzOGEtY3RVc2RVRVk4RGFxNEhkMXNZMGxEcV9sU1NMNFdUblFkOFp0ZjI5S0N4cXN5TjdKLXpNYXgwUy1ycjFrTVk1ZFNJa0VHeE5QdnhhU0JqNU9oMGFtYk1vc0tZZGJXMjU0?oc=5" target="_blank">Netherlands Inflation June 2026: CPI Falls to 2.9% Year-on-Year, CBS Reports - News and Statistics - IndexBox</a></h3>
+                        <p>Netherlands Inflation June 2026: CPI Falls to 2.9% Year-on-Year, CBS Reports - News and Statistics&nbsp;&nbsp;IndexBox</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: "Netherlands FMCG when:1d" - Google News</span>
+                    </div>
+                </div></div>
+        <h3 style="margin: 1.5rem 0 1rem 0; font-size: 1.2rem; color: var(--text-muted);">Italy</h3>
+        <div class="grid" style="margin-bottom: 2rem;">
     
-    <div class="story">
-
-        <h3>
-            https://www.esmmagazine.com/retail/carrefour-brasil-to-deploy-solar-power-systems-across-54-stores-315056
-                Carrefour Brasil To Deploy Solar Power Systems Across 54 Stores
-            </a>
-        </h3>
-
-        <p>
-            Carrefour Brasil has signed a contract with GreenYellow energy transition to instal solar power systems in 54 of its stores.
-        </p>
-
-        <div class="meta">
-            Source: ESM Magazine
-        </div>
-
-    </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/retail/aging-population-declining-births-reshape-italys-food-industry-unione-italiana-food-315416" target="_blank">Aging Population, Declining Births Reshape Italy’s Food Industry – Unione Italiana Food</a></h3>
+                        <p>Italy’s food industry is undergoing a significant transformation to meet the needs of an aging population and declining births.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://news.google.com/rss/articles/CBMijwFBVV95cUxPZ2hEbFp3clk5UnJqVjF0NlFLYUhqY0FHX1ZmM3YzV29fb2l0eC1hZDNCcUVaanFqZjh3QXc3LWtYWUtZbHpGY0h2dWpDeUo0NjZ5OWpMY0ZiRlRveEthMXZkSWNJS2UyQW5HYkdYSlFKZ3E4ZzloeEdPR2ppQlVDUTdNc2RVeUQ2QjdxZVhNOA?oc=5" target="_blank">Revenue of the wine industry in Italy from 2018 to 2030 - Statista</a></h3>
+                        <p>Revenue of the wine industry in Italy from 2018 to 2030&nbsp;&nbsp;Statista</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: "Italy FMCG when:1d" - Google News</span>
+                    </div>
+                </div></div>
+        <h3 style="margin: 1.5rem 0 1rem 0; font-size: 1.2rem; color: var(--text-muted);">Spain</h3>
+        <div class="grid" style="margin-bottom: 2rem;">
     
-    <div class="story">
-
-        <h3>
-            https://www.esmmagazine.com/retail/denmarks-dagrofa-to-acquire-discount-chain-abc-lavpris-315812
-                Denmark’s Dagrofa To Acquire Discount Chain ABC Lavpris
-            </a>
-        </h3>
-
-        <p>
-            Danish grocery group Dagrofa, a NorgesGruppen affiliate, has announced the acquisition of discount supermarket chain ABC Lavpris.
-        </p>
-
-        <div class="meta">
-            Source: ESM Magazine
-        </div>
-
-    </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">Plant-Based Alternative</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/fresh-produce/acomo-to-acquire-spanish-organic-citrus-producer-citromil-314698" target="_blank">Acomo To Acquire Spanish Organic Citrus Producer Citromil</a></h3>
+                        <p>Plant-based food ingredient group Acomo is set to acquire Citromil, a Spanish family-owned organic citrus producer.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://news.google.com/rss/articles/CBMiqwFBVV95cUxOeDlxQ3NUNGc0LVJSbFM0N2lWOWpvSnFxNlJFWTlqdFMzU3U3RUZGYUQyTGtCZXJUMEVWTW42R2N0U3VBcGJmZHlzbEpiU2ZOSUZGMFBON25HVFVzYTFWMllFYVZxeHd6ZXBBVk9idmQtSENiTnQ5VnJteHlmVGUwYzFfM2l5YktsUWZISVhuY1lBbTRDZi1ENWUxdm1fX29ibUZxSHExaGRSaFE?oc=5" target="_blank">Revenue per capita of beer in Spain 2018-2030 - Statista</a></h3>
+                        <p>Revenue per capita of beer in Spain 2018-2030&nbsp;&nbsp;Statista</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: "UK FMCG when:1d" - Google News</span>
+                    </div>
+                </div></div>
+        <h3 style="margin: 1.5rem 0 1rem 0; font-size: 1.2rem; color: var(--text-muted);">Greece</h3>
+        <div class="grid" style="margin-bottom: 2rem;">
     
-    <div class="story">
-
-        <h3>
-            https://www.esmmagazine.com/retail/edeka-nst-sees-growth-in-full-year-retail-sales-following-investment-programme-315800
-                Edeka NST Sees Growth In Full-Year Retail Sales Following Investment Programme
-            </a>
-        </h3>
-
-        <p>
-            Edeka NST has reported 2.4% year-on-year increase in retail sales, to €5.52 billion, driven by its investment strategy in FY 2025.
-        </p>
-
-        <div class="meta">
-            Source: ESM Magazine
-        </div>
-
-    </div>
-    
-    <div class="story">
-
-        <h3>
-            https://www.esmmagazine.com/retail/cooperative-u-sees-strongest-growth-online-channel-most-dynamic-in-france-worldpanel-315761
-                Coopérative U Sees Strongest Growth, Online Channel Most Dynamic In France – Worldpanel
-            </a>
-        </h3>
-
-        <p>
-            Online emerged as the most dynamic channel in France’s grocery sector and Coopérative U saw the strongest growth in the market.
-        </p>
-
-        <div class="meta">
-            Source: ESM Magazine
-        </div>
-
-    </div>
-    
-    <div class="story">
-
-        <h3>
-            https://www.esmmagazine.com/retail/gruppo-selex-targets-4-5-revenue-growth-in-2026-315574
-                Gruppo Selex Targets 4.5% Revenue Growth In 2026
-            </a>
-        </h3>
-
-        <p>
-            Gruppo Selex is targeting revenue of €23.3 billion in FY 2026, or 4.5% growth compared to the €22.3 billion reported in 2025.
-        </p>
-
-        <div class="meta">
-            Source: ESM Magazine
-        </div>
-
-    </div>
-    
-    <div class="story">
-
-        <h3>
-            https://www.esmmagazine.com/private-label/billa-austria-announces-relaunch-of-simply-good-meal-range-313044
-                Billa Austria Announces Relaunch Of Simply Good Meal Range
-            </a>
-        </h3>
-
-        <p>
-            Billa Austria is relaunching its Billa Simply Good private label brand, which offers fresh, natural, and nutrient-rich meals free of unwanted additives.
-        </p>
-
-        <div class="meta">
-            Source: ESM Magazine
-        </div>
-
-    </div>
-    
-    <div class="story">
-
-        <h3>
-            https://www.esmmagazine.com/features/building-value-and-values-danones-pablo-perversi-and-ayla-ziz-talk-to-esm-273935
-                Building Value And Values – Danone’s Pablo Perversi And Ayla Ziz Talk To ESM
-            </a>
-        </h3>
-
-        <p>
-            ESM’s Stephen Wynne-Jones meets Pablo Perversi, President Europe Danone, and Ayla Ziz, SVP Sales, Customer & Commercial Europe Danone.
-        </p>
-
-        <div class="meta">
-            Source: ESM Magazine
-        </div>
-
-    </div>
-    
-    <div class="story">
-
-        <h3>
-            https://www.esmmagazine.com/features/winning-ways-crai-president-giangiacomo-ibba-on-transforming-the-cooperative-chain-312386
-                Winning Ways: Crai President Giangiacomo Ibba On Transforming The Cooperative Chain
-            </a>
-        </h3>
-
-        <p>
-            Crai president Giangiacomo Ibba discusses growth plans, retail transformation and preserving the cooperative spirit.
-        </p>
-
-        <div class="meta">
-            Source: ESM Magazine
-        </div>
-
-    </div>
-    
-    <div class="story">
-
-        <h3>
-            https://www.esmmagazine.com/a-brands/mars-impact-fund-awards-e1-5m-grant-to-lindau-nobel-laureate-meetings-315469
-                Mars Impact Fund Awards €1.5m Grant To Lindau Nobel Laureate Meetings
-            </a>
-        </h3>
-
-        <p>
-            Mars, Incorporated has renewed its long-standing partnership with the Lindau Nobel Laureate Meetings.
-        </p>
-
-        <div class="meta">
-            Source: ESM Magazine
-        </div>
-
-    </div>
-    
-    <div class="story">
-
-        <h3>
-            https://www.esmmagazine.com/a-brands/loreal-launches-nyx-fragrance-range-to-tap-gen-z-perfume-market-315287
-                L'Oreal Launches NYX Fragrance Range To Tap Gen Z Perfume Market
-            </a>
-        </h3>
-
-        <p>
-            L'Oréal plans mass-market fragrance mists to capture Gen Z demand for affordable, K-beauty-inspired scents, an executive told Reuters.
-        </p>
-
-        <div class="meta">
-            Source: ESM Magazine
-        </div>
-
-    </div>
-    </div>
-    <div class="section">
-    <h2>United Kingdom</h2>
-    
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/retail/esms-retail-wrap-jumbo-maxima-latvia-hormel-foods-livestock-smurfit-westrock-315666">
-                        ESM's Retail Wrap – Jumbo, Maxima Latvia, Hormel Foods, Livestock, Smurfit Westrock
-                    </a>
-                </h3>
-
-                <p>
-                    Jumbo launches cleaning products range; Maxima Latvija cuts VAT; EU livestock numbers decline; and Smurfit Westrock to close UK paper mill.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/supply-chain/co-op-uk-and-gxo-logistics-strengthen-ties-315540">
-                        Co-op UK And GXO Logistics Strengthen Ties
-                    </a>
-                </h3>
-
-                <p>
-                    Co-op UK and GXO logistics have announced a five-year transport contract extension, taking the supply chain partnership to more than 20 years.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/technology/asda-partners-with-amazon-to-launch-retail-ad-service-315116">
-                        Asda Partners With Amazon To Launch Retail Ad Service
-                    </a>
-                </h3>
-
-                <p>
-                    UK retailer Asda has announced that it has partnered with Amazon to introduce Amazon Retail Ad Service to its online store.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/retail/asda-appoints-helen-connolly-as-ceo-of-fashion-brand-george-315775">
-                        Asda Appoints Helen Connolly As CEO Of Fashion Brand George
-                    </a>
-                </h3>
-
-                <p>
-                    UK retailer Asda has appointed Helen Connolly as chief executive officer of George, its fashion and homeware brand.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/private-label/uks-mcbride-warns-profit-to-miss-expectations-as-iran-war-drives-up-input-costs-314089">
-                        UK's McBride Warns Profit To Miss Expectations As Iran War Drives Up Input Costs
-                    </a>
-                </h3>
-
-                <p>
-                    Private-label manufacturer McBride warns FY26/FY27 profits will miss market views by 5%-10% as Iran war costs squeeze margins.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/a-brands/marmite-turns-into-wemite-for-englands-world-cup-campaign-315728">
-                        Marmite Turns Into ‘WeMite’ For England's World Cup Campaign
-                    </a>
-                </h3>
-
-                <p>
-                    Marmite has temporarily swapped its name for ‘WeMite’ after England 'Kane'-d their way into the World Cup round of 16.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/fresh-produce/waitrose-first-supermarket-with-year-round-british-samphire-314552">
-                        Waitrose First Supermarket To Offer Year-Round British Samphire
-                    </a>
-                </h3>
-
-                <p>
-                    UK retailer Waitrose is offering British-grown samphire year round, highlighting its commitment to British agriculture.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/technology/ai-drives-product-discovery-among-uk-shoppers-but-79-double-check-recommendations-315531">
-                        AI Drives Product Discovery Among UK Shoppers, But 79% Double-Check Recommendations
-                    </a>
-                </h3>
-
-                <p>
-                    More than half (52%) of UK consumers who use AI tools like ChatGPT say the technology makes it easier to discover new brands.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/packaging-design/uk-consumers-seek-plastic-free-packaging-during-world-cup-events-yonder-314900">
-                        UK Consumers Seek Plastic-Free Packaging During World Cup Events, Study Finds
-                    </a>
-                </h3>
-
-                <p>
-                    Three quarters (74%) of British consumers want plastic-free food packaging at major sporting events like the 2026 FIFA World Cup.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            </div>
-    <div class="section">
-    <h2>France</h2>
-    
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/retail/nutri-score-market-share-falls-slightly-in-france-in-2025-oqali-315767">
-                        Nutri-Score Market Share Falls Slightly In France In 2025 – Oqali
-                    </a>
-                </h3>
-
-                <p>
-                    Nutri-Score’s market penetration edged down in France in 2025, after years of growth, according to Oqali’s latest report.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/retail/cooperative-u-sees-strongest-growth-online-channel-most-dynamic-in-france-worldpanel-315761">
-                        Coopérative U Sees Strongest Growth, Online Channel Most Dynamic In France – Worldpanel
-                    </a>
-                </h3>
-
-                <p>
-                    Online emerged as the most dynamic channel in France’s grocery sector and Coopérative U saw the strongest growth in the market.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/fresh-produce/sodiaal-reports-revenue-of-e6-2bn-in-fy-2025-315683">
-                        Sodiaal Reports Revenue Of €6.2bn In FY 2025
-                    </a>
-                </h3>
-
-                <p>
-                    French dairy cooperative Sodiaal has reported consolidated revenue of €6.2 billion in its financial year 2025, according to its latest report.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/supply-chain/french-maize-crop-ratings-plunge-to-13-year-low-in-heatwave-315745">
-                        French Maize Crop Ratings Plunge To 13-Year Low In Heatwave
-                    </a>
-                </h3>
-
-                <p>
-                    Summary unavailable.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/supply-chain/drought-threatens-french-sugar-beet-crop-with-no-rain-in-sight-315484">
-                        Drought Threatens French Sugar Beet Crop With No Rain In Sight
-                    </a>
-                </h3>
-
-                <p>
-                    A prolonged drought is threatening sugar output in France with no rain forecast in key beet regions over the next two weeks, growers said.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            </div>
-    <div class="section">
-    <h2>Germany</h2>
-    
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/private-label/tradition-meets-innovation-kuchenmeister-brings-german-quality-to-seoul-food-hotel-313440">
-                        Tradition Meets Innovation – KuchenMeister Brings ‘German Quality’ To Seoul Food & Hotel
-                    </a>
-                </h3>
-
-                <p>
-                    KuchenMeister GmbH presents its diverse portfolio of fine baked goods at the Seoul Food & Hotel exhibition.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/fresh-produce/cherries-on-top-german-harvest-expected-to-rise-to-51100-tonnes-in-2026-315323">
-                        Cherries On Top – German Harvest Expected To Rise To 51,100 Tonnes In 2026
-                    </a>
-                </h3>
-
-                <p>
-                    The 2026 cherry harvest in Germany is expected to reach around 51,100 tonnes, representing an increase of 8.5%, as per Destatis.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/supply-chain/germanys-top-diplomat-says-eu-mercosur-deal-still-has-issues-to-resolve-315571">
-                        Germany's Top Diplomat Says EU-Mercosur Deal Still Has Issues To Resolve
-                    </a>
-                </h3>
-
-                <p>
-                    Germany's Johann Wadephul said there were still "issues" to resolve before the EU's trade agreement with the Mercosur bloc can be ratif...
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            </div>
-    <div class="section">
-    <h2>Netherlands</h2>
-    
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/retail/ahold-delhaizes-wouter-kolk-talks-to-esm-as-he-departs-the-dutch-retailer-273866">
-                        Ahold Delhaize's Wouter Kolk Talks To ESM As He Departs The Dutch Retailer
-                    </a>
-                </h3>
-
-                <p>
-                    ESM catches up with Wouter Kolk as he steps down from the role of CEO of Ahold Delhaize Europe & Indonesia.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/supply-chain/jumbo-switches-own-brand-quinoa-to-100-organic-dutch-grown-315881">
-                        Jumbo Switches Own-Brand Quinoa To 100% Organic Dutch Grown
-                    </a>
-                </h3>
-
-                <p>
-                    Dutch retailer Jumbo Supermarkten has transitioned its own-brand quinoa to an exclusively organic, Dutch-grown supply.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/supply-chain/vion-food-group-to-sell-food-service-business-unit-315748">
-                        Vion Food Group To Sell Food Service Business Unit
-                    </a>
-                </h3>
-
-                <p>
-                    Dutch meat producer Vion Food Group has agreed to sell its Food Service business to Dutch firm Group of Butchers.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/supply-chain/jumbo-opens-electric-vehicle-fast-charging-hub-at-nieuwegein-315665">
-                        Jumbo Opens Electric Vehicle Fast-Charging Hub At Nieuwegein
-                    </a>
-                </h3>
-
-                <p>
-                    Dutch retailer Jumbo has opened a new fast-charging hub for electric vehicles at its central distribution centre in Nieuwegein.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            </div>
-    <div class="section">
-    <h2>Italy</h2>
-    
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/retail/aging-population-declining-births-reshape-italys-food-industry-unione-italiana-food-315416">
-                        Aging Population, Declining Births Reshape Italy’s Food Industry – Unione Italiana Food
-                    </a>
-                </h3>
-
-                <p>
-                    Italy’s food industry is undergoing a significant transformation to meet the needs of an aging population and declining births.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            </div>
-    <div class="section">
-    <h2>Spain</h2>
-    
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/drinks/damm-posts-full-year-revenue-of-e2bn-as-international-business-grows-315318">
-                        Damm Posts Full-Year Revenue Of €2bn As International Business Grows
-                    </a>
-                </h3>
-
-                <p>
-                    Spanish brewer Damm reported revenue of €2.01 billion in its 2025 financial year, driven primarily by growth in its international operations.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            
-            <div class="story">
-
-                <h3>
-                    https://www.esmmagazine.com/fresh-produce/acomo-to-acquire-spanish-organic-citrus-producer-citromil-314698">
-                        Acomo To Acquire Spanish Organic Citrus Producer Citromil
-                    </a>
-                </h3>
-
-                <p>
-                    Plant-based food ingredient group Acomo is set to acquire Citromil, a Spanish family-owned organic citrus producer.
-                </p>
-
-                <div class="meta">
-                    Source: ESM Magazine
-                </div>
-
-            </div>
-            </div>
-    <div class="section">
-    <h2>Greece</h2>
-    
-        <p>No relevant stories found.</p>
-        </div>
-
-<div class="section">
-
-<h2>Archive</h2>
-
-<p>
-Daily archive created automatically.
-Current archive file:
-2026-07-07.html
-</p>
-
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://news.google.com/rss/articles/CBMilwFBVV95cUxNUC1jeXpac1p4MDU2emVJVURkcThUaVJXWEdTMXVRMWxidkg0UGRKMmxiUTJhSnV3RExVX2RwZk5ueEQwYXRvd0ZZczdkZ2JMdDhoYkkwMWRmazViRDljT3BQZEJmTTBKZTRPaE5uN3pGMHVWUUxSX01FLTRIM01sdV96YzVrV1cycVpGRHU5RVN5QzBKdDBv?oc=5" target="_blank">Listening to what the Bank of Greece is saying - eKathimerini.com</a></h3>
+                        <p>Listening to what the Bank of Greece is saying&nbsp;&nbsp;eKathimerini.com</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: "Greece FMCG when:1d" - Google News</span>
+                    </div>
+                </div></div>
+    </section>
 </div>
 
 </body>
