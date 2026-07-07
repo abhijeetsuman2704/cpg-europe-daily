@@ -42,9 +42,7 @@ today = datetime.now()
 edition_date = today.strftime("%d %B %Y")
 timestamp = today.strftime("%d %b %Y %H:%M")
 
-archive_file = (
-    f"docs/archive/{today.strftime('%Y-%m-%d')}.html"
-)
+archive_file = f"docs/archive/{today.strftime('%Y-%m-%d')}.html"
 
 articles = []
 seen = set()
@@ -62,8 +60,9 @@ for feed in feeds:
 
         data = feedparser.parse(feed)
 
-        source_name = (
-            data.feed.get("title", "Unknown Source")
+        source_name = data.feed.get(
+            "title",
+            "Unknown Source"
         )
 
         for entry in data.entries:
@@ -78,47 +77,46 @@ for feed in feeds:
                 or "Summary unavailable."
             )
 
-            summary = re.sub("<.*?>", "", summary)
+            summary = re.sub(r"<.*?>", "", summary)
 
-            summary = summary[:400]
+            summary = summary.replace("\n", " ")
 
-            key = title.lower()
+            if len(summary) > 500:
+                summary = summary[:500] + "..."
+
+            key = title.lower().strip()
 
             if key in seen:
                 continue
 
             seen.add(key)
 
-            text = (
-                title + " " + summary
-            ).lower()
+            text = (title + " " + summary).lower()
 
             country = "Europe"
 
-            for c, keys in COUNTRIES.items():
+            for c, keywords in COUNTRIES.items():
 
-                if any(k in text for k in keys):
+                if any(k in text for k in keywords):
                     country = c
                     break
 
             top_story = any(
-                word in text
-                for word in TOP_STORY_WORDS
+                keyword in text
+                for keyword in TOP_STORY_WORDS
             )
 
-            articles.append(
-                {
-                    "title": title,
-                    "link": link,
-                    "summary": summary,
-                    "source": source_name,
-                    "country": country,
-                    "top_story": top_story
-                }
-            )
+            articles.append({
+                "title": title,
+                "link": link,
+                "summary": summary,
+                "source": source_name,
+                "country": country,
+                "top_story": top_story
+            })
 
     except Exception as e:
-        print(feed, e)
+        print("Feed Error:", feed, e)
 
 articles = sorted(
     articles,
@@ -127,7 +125,6 @@ articles = sorted(
 )
 
 html = f"""
-
 <html>
 
 <head>
@@ -137,58 +134,62 @@ html = f"""
 <style>
 
 body {{
-background:#f2f4f7;
-font-family:Arial,sans-serif;
-max-width:1200px;
-margin:auto;
-padding:30px;
+    background:#f3f5f7;
+    font-family:Arial,sans-serif;
+    max-width:1200px;
+    margin:auto;
+    padding:25px;
 }}
 
 .header {{
-background:#003366;
-color:white;
-padding:25px;
-border-radius:10px;
-margin-bottom:20px;
-}}
-
-h1 {{
-margin:0;
+    background:#003366;
+    color:white;
+    padding:25px;
+    border-radius:10px;
+    margin-bottom:25px;
 }}
 
 .section {{
-background:white;
-padding:20px;
-margin-bottom:20px;
-border-radius:10px;
-box-shadow:0 1px 4px rgba(0,0,0,0.15);
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:25px;
+    box-shadow:0 1px 5px rgba(0,0,0,0.15);
 }}
 
 .story {{
-padding:15px;
-border-bottom:1px solid #ddd;
-}}
-
-.story:last-child {{
-border:none;
+    padding:18px;
+    margin-bottom:15px;
+    border-left:4px solid #003366;
+    background:#fafafa;
 }}
 
 .story h3 {{
-margin-bottom:8px;
+    margin-top:0;
 }}
 
 .story a {{
-text-decoration:none;
-color:#0056b3;
+    text-decoration:none;
+    color:#0056b3;
+}}
+
+.story a:hover {{
+    text-decoration:underline;
 }}
 
 .story p {{
-line-height:1.5;
+    line-height:1.6;
+    color:#333;
 }}
 
 .meta {{
-font-size:12px;
-color:#666;
+    color:#777;
+    font-size:12px;
+    margin-top:10px;
+}}
+
+h1,h2 {{
+    margin-top:0;
 }}
 
 </style>
@@ -202,16 +203,16 @@ color:#666;
 <h1>CPG Europe Daily Intelligence</h1>
 
 <p>
-European FMCG / Consumer Goods Intelligence
+European FMCG / Consumer Goods Intelligence Newsletter
 </p>
 
 <p>
-Edition Date: {edition_date}<br>
+Edition Date: {edition_date}
+<br>
 Updated: {timestamp}
 </p>
 
 </div>
-
 """
 
 # TOP STORIES
@@ -224,25 +225,23 @@ html += """
 for article in articles[:15]:
 
     html += f"""
-
     <div class="story">
 
-    <h3>
-    ]}" target="_blank">
-    {article['title']}
-    </a>
-    </h3>
+        <h3>
+            {article['link']}
+                {article['title']}
+            </a>
+        </h3>
 
-    <p>
-    {article['summary']}
-    </p>
+        <p>
+            {article['summary']}
+        </p>
 
-    <div class="meta">
-    Source: {article['source']}
+        <div class="meta">
+            Source: {article['source']}
+        </div>
+
     </div>
-
-    </div>
-
     """
 
 html += "</div>"
@@ -265,59 +264,51 @@ for country in COUNTRIES.keys():
     if len(country_articles) == 0:
 
         html += """
-        <p>
-        No relevant stories found.
-        </p>
+        <p>No relevant stories found.</p>
         """
 
     else:
 
-        for article in country_articles[:12]:
+        for article in country_articles[:10]:
 
             html += f"""
-
             <div class="story">
 
-            <h3>
+                <h3>
+                    {article['link']}">
+                        {article['title']}
+                    </a>
+                </h3>
 
-            {article['link']}
+                <p>
+                    {article['summary']}
+                </p>
 
-            {article['title']}
-
-            </a>
-
-            </h3>
-
-            <p>
-            {article['summary']}
-            </p>
-
-            <div class="meta">
-            Source: {article['source']}
-            </div>
+                <div class="meta">
+                    Source: {article['source']}
+                </div>
 
             </div>
-
             """
 
     html += "</div>"
 
-html += """
+html += f"""
 
 <div class="section">
 
 <h2>Archive</h2>
 
 <p>
-Past editions are stored automatically
-inside the archive folder.
+Daily archive created automatically.
+Current archive file:
+{today.strftime('%Y-%m-%d')}.html
 </p>
 
 </div>
 
 </body>
 </html>
-
 """
 
 with open(
@@ -325,7 +316,6 @@ with open(
     "w",
     encoding="utf-8"
 ) as f:
-
     f.write(html)
 
 with open(
@@ -333,13 +323,14 @@ with open(
     "w",
     encoding="utf-8"
 ) as f:
-
     f.write(html)
 
 print(
     f"Newsletter generated successfully. "
     f"Stories: {len(articles)}"
 )
+    
+
             
 
 
