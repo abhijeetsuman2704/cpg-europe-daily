@@ -1,0 +1,17 @@
+https://www.esmmagazine.com/feed
+
+https://news.google.com/rss/search?q=Europe+FMCG+when:1d&hl=en-GB&gl=GB&ceid=GB:en
+
+https://news.google.com/rss/search?q=UK+FMCG+when:1d&hl=en-GB&gl=GB&ceid=GB:en
+
+https://news.google.com/rss/search?q=France+FMCG+when:1d&hl=en&gl=FR&ceid=FR:en
+
+https://news.google.com/rss/search?q=Germany+FMCG+when:1d&hl=en&gl=DE&ceid=DE:en
+
+https://news.google.com/rss/search?q=Netherlands+FMCG+when:1d&hl=en&gl=NL&ceid=NL:en
+
+https://news.google.com/rss/search?q=Italy+FMCG+when:1d&hl=en&gl=IT&ceid=IT:en
+
+https://news.google.com/rss/search?q=Spain+FMCG+when:1d&hl=en&gl=ES&ceid=ES:en
+
+https://news.google.com/rss/search?q=Greece+FMCG+when:1d&hl=en&gl=GR&ceid=GR:en
