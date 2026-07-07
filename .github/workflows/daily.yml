@@ -16,16 +16,17 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Verify Files
+      - name: Verify Repository Files
         run: |
-          echo "Checking files..."
+          echo "Repository contents:"
           ls -la
 
       - name: Run Newsletter Script
         run: |
           python collect_news.py
+       
