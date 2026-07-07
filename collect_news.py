@@ -1,0 +1,10 @@
+print("CPG Europe Daily Intelligence")
+
+print("Countries:")
+print("UK")
+print("France")
+print("Germany")
+print("Netherlands")
+print("Italy")
+print("Spain")
+print("Greece")
