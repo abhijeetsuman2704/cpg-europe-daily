@@ -1,37 +1,39 @@
-name: CPG Europe Daily Intelligence
+name: Daily CPG Intelligence Refresh
 
 on:
   schedule:
-    - cron: "30 1 * * *"
-  workflow_dispatch:
+    # Runs everyday at 06:00 UTC (11:30 AM IST)
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Allows manual pipeline execution instantly
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  refresh-and-publish:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Install Python Environment
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: '3.10'
 
-      - name: Install dependencies
+      - name: Install Libraries
         run: |
-          pip install -r requirements.txt
+          pip install feedparser
 
-      - name: Build newsletter
+      - name: Run Extraction Pipeline
         run: |
           python collect_news.py
 
-      - name: Commit newsletter
+      - name: Commit and Push Changes
         run: |
-          git config user.name "newsletter-bot"
-          git config user.email "actions@github.com"
-          git add .
-          git commit -m "Daily newsletter update" || echo "No changes"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/
+          git diff-index --quiet HEAD || git commit -m "Automated intelligence update: $(date -u +'%Y-%m-%d %H:%M') UTC"
           git push
        
