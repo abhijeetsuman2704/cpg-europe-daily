@@ -1,10 +1,31 @@
 name: CPG Europe Daily Intelligence
+
 on:
   schedule:
     - cron: "30 1 * * *"
   workflow_dispatch:
+
 permissions:
   contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify Files
+        run: |
+          echo "Checking files..."
+          ls -la
+
+      - name: Run Newsletter Script
+        run: |
+          python collect_news.py
