@@ -1,7 +1,7 @@
 import feedparser
 from datetime import datetime
 from pathlib import Path
-import os
+import re
 
 SITE_TITLE = "CPG Europe Daily Intelligence"
 
@@ -15,80 +15,121 @@ COUNTRIES = {
     "Greece": ["greece", "greek"]
 }
 
-FMCG_KEYWORDS = [
-    "retail",
-    "supermarket",
-    "grocery",
-    "consumer",
-    "fmcg",
-    "cpg",
-    "food",
-    "beverage",
-    "drink",
-    "brand",
-    "product",
-    "packaging",
-    "supply chain",
-    "sustainability",
+TOP_STORY_WORDS = [
     "acquisition",
     "merger",
-    "launch"
+    "investment",
+    "launch",
+    "expansion",
+    "growth",
+    "partnership",
+    "carrefour",
+    "tesco",
+    "aldi",
+    "lidl",
+    "nestle",
+    "unilever",
+    "danone",
+    "pepsico",
+    "coca-cola"
 ]
 
 Path("docs").mkdir(exist_ok=True)
 Path("docs/archive").mkdir(exist_ok=True)
 
 today = datetime.now()
-edition_date = today.strftime("%d %b %Y")
-archive_file = f"docs/archive/{today.strftime('%Y-%m-%d')}.html"
+
+edition_date = today.strftime("%d %B %Y")
+timestamp = today.strftime("%d %b %Y %H:%M")
+
+archive_file = (
+    f"docs/archive/{today.strftime('%Y-%m-%d')}.html"
+)
 
 articles = []
 seen = set()
 
 with open("feeds.txt", "r", encoding="utf-8") as f:
-    feeds = [x.strip() for x in f.readlines()
-             if x.strip() and not x.startswith("#")]
+    feeds = [
+        x.strip()
+        for x in f.readlines()
+        if x.strip() and not x.startswith("#")
+    ]
 
 for feed in feeds:
 
     try:
-        parsed = feedparser.parse(feed)
 
-        for entry in parsed.entries:
+        data = feedparser.parse(feed)
+
+        source_name = (
+            data.feed.get("title", "Unknown Source")
+        )
+
+        for entry in data.entries:
 
             title = entry.get("title", "")
+
             link = entry.get("link", "")
 
-            text = title.lower()
+            summary = (
+                entry.get("summary")
+                or entry.get("description")
+                or "Summary unavailable."
+            )
 
-            if not any(word in text for word in FMCG_KEYWORDS):
-                continue
+            summary = re.sub("<.*?>", "", summary)
 
-            key = title.lower().strip()
+            summary = summary[:400]
+
+            key = title.lower()
 
             if key in seen:
                 continue
 
             seen.add(key)
 
+            text = (
+                title + " " + summary
+            ).lower()
+
             country = "Europe"
 
-            for c, keywords in COUNTRIES.items():
-                if any(k in text for k in keywords):
+            for c, keys in COUNTRIES.items():
+
+                if any(k in text for k in keys):
                     country = c
                     break
 
-            articles.append({
-                "title": title,
-                "link": link,
-                "country": country
-            })
+            top_story = any(
+                word in text
+                for word in TOP_STORY_WORDS
+            )
+
+            articles.append(
+                {
+                    "title": title,
+                    "link": link,
+                    "summary": summary,
+                    "source": source_name,
+                    "country": country,
+                    "top_story": top_story
+                }
+            )
 
     except Exception as e:
         print(feed, e)
 
+articles = sorted(
+    articles,
+    key=lambda x: x["top_story"],
+    reverse=True
+)
+
 html = f"""
+
 <html>
+
 <head>
 
 <title>{SITE_TITLE}</title>
@@ -96,51 +137,58 @@ html = f"""
 <style>
 
 body {{
-    font-family: Arial, sans-serif;
-    background:#f4f6f8;
-    margin:auto;
-    max-width:1200px;
-    padding:20px;
+background:#f2f4f7;
+font-family:Arial,sans-serif;
+max-width:1200px;
+margin:auto;
+padding:30px;
 }}
 
 .header {{
-    background:#003366;
-    color:white;
-    padding:20px;
-    border-radius:8px;
-}}
-
-.section {{
-    background:white;
-    margin-top:20px;
-    padding:15px;
-    border-radius:8px;
-    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+background:#003366;
+color:white;
+padding:25px;
+border-radius:10px;
+margin-bottom:20px;
 }}
 
 h1 {{
-    margin:0;
+margin:0;
 }}
 
-h2 {{
-    color:#003366;
+.section {{
+background:white;
+padding:20px;
+margin-bottom:20px;
+border-radius:10px;
+box-shadow:0 1px 4px rgba(0,0,0,0.15);
 }}
 
-a {{
-    text-decoration:none;
-    color:#0056b3;
+.story {{
+padding:15px;
+border-bottom:1px solid #ddd;
 }}
 
-a:hover {{
-    text-decoration:underline;
+.story:last-child {{
+border:none;
 }}
 
-.article {{
-    padding:5px 0;
+.story h3 {{
+margin-bottom:8px;
 }}
 
-.date {{
-    color:#666;
+.story a {{
+text-decoration:none;
+color:#0056b3;
+}}
+
+.story p {{
+line-height:1.5;
+}}
+
+.meta {{
+font-size:12px;
+color:#666;
 }}
 
 </style>
@@ -150,11 +198,25 @@ a:hover {{
 <body>
 
 <div class="header">
+
 <h1>CPG Europe Daily Intelligence</h1>
-<p>European FMCG / CPG Intelligence Newsletter</p>
-<p class="date">{edition_date}</p>
+
+<p>
+European FMCG / Consumer Goods Intelligence
+</p>
+
+<p>
+Edition Date: {edition_date}<br>
+Updated: {timestamp}
+</p>
+
 </div>
 
+"""
+
+# TOP STORIES
+
+html += """
 <div class="section">
 <h2>Top Stories</h2>
 """
@@ -162,41 +224,80 @@ a:hover {{
 for article in articles[:15]:
 
     html += f"""
-    <div class="article">
-    • {article['link']}
+
+    <div class="story">
+
+    <h3>
+    ]}" target="_blank">
     {article['title']}
     </a>
+    </h3>
+
+    <p>
+    {article['summary']}
+    </p>
+
+    <div class="meta">
+    Source: {article['source']}
     </div>
+
+    </div>
+
     """
 
 html += "</div>"
 
+# COUNTRY SECTIONS
+
 for country in COUNTRIES.keys():
+
+    country_articles = [
+        a
+        for a in articles
+        if a["country"] == country
+    ]
 
     html += f"""
     <div class="section">
     <h2>{country}</h2>
     """
 
-    country_articles = [
-        x for x in articles
-        if x["country"] == country
-    ]
-
     if len(country_articles) == 0:
 
-        html += "<p>No relevant stories found.</p>"
+        html += """
+        <p>
+        No relevant stories found.
+        </p>
+        """
 
     else:
 
-        for article in country_articles[:20]:
+        for article in country_articles[:12]:
 
             html += f"""
-            <div class="article">
-            • {article['link']} target="_blank">
+
+            <div class="story">
+
+            <h3>
+
+            {article['link']}
+
             {article['title']}
+
             </a>
+
+            </h3>
+
+            <p>
+            {article['summary']}
+            </p>
+
+            <div class="meta">
+            Source: {article['source']}
             </div>
+
+            </div>
+
             """
 
     html += "</div>"
@@ -204,10 +305,14 @@ for country in COUNTRIES.keys():
 html += """
 
 <div class="section">
+
 <h2>Archive</h2>
+
 <p>
-Previous editions available in the archive folder.
+Past editions are stored automatically
+inside the archive folder.
 </p>
+
 </div>
 
 </body>
@@ -215,14 +320,26 @@ Previous editions available in the archive folder.
 
 """
 
-with open("docs/index.html", "w", encoding="utf-8") as f:
+with open(
+    "docs/index.html",
+    "w",
+    encoding="utf-8"
+) as f:
+
     f.write(html)
 
-with open(archive_file, "w", encoding="utf-8") as f:
+with open(
+    archive_file,
+    "w",
+    encoding="utf-8"
+) as f:
+
     f.write(html)
 
-print(f"Newsletter generated: {len(articles)} articles")
-
+print(
+    f"Newsletter generated successfully. "
+    f"Stories: {len(articles)}"
+)
             
 
 
