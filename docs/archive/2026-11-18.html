@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPG Europe Daily Intelligence</title>
+    <style>
+        :root {
+            --bg-primary: #f4f6f9;
+            --surface: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --brand-primary: #002e6e; /* Professional Corporate Navy */
+            --accent: #0284c7;
+            --border: #e2e8f0;
+            --tag-bg: #f8fafc;
+            --highlight: #fef08a; /* Soft highlighter yellow */
+        }
+        body {
+            background-color: var(--bg-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .navbar {
+            background-color: var(--brand-primary);
+            color: white;
+            padding: 2.5rem 2rem;
+            border-bottom: 5px solid var(--accent);
+        }
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        .navbar h1 { margin: 0; font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; }
+        .navbar p { margin: 0.35rem 0 0 0; color: #93c5fd; font-size: 1rem; opacity: 0.9; }
+        .meta-badge {
+            background: rgba(255,255,255,0.08);
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(255,255,255,0.15);
+            text-align: right;
+        }
+        .main-layout {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
+        /* Executive Summary Box Styling */
+        .synthesis-container {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+            border-left: 6px solid var(--brand-primary);
+            border-radius: 12px;
+            padding: 1.75rem 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            border: 1px solid #d0e7ff;
+        }
+        .synthesis-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--brand-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .synthesis-list { margin: 0; padding-left: 1.25rem; }
+        .synthesis-list li { margin-bottom: 0.75rem; font-size: 0.95rem; color: #334155; }
+        
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+            color: var(--brand-primary);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 1.75rem;
+        }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.07);
+        }
+        .card-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.3rem 0.65rem;
+            border-radius: 4px;
+            background: var(--tag-bg);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+        /* Color-Coded Impact Indicators */
+        .tag-ma { background: #fee2e2; color: #991b1b; }
+        .tag-launch { background: #dcfce7; color: #166534; }
+        .tag-reg { background: #fef3c7; color: #92400e; }
+        .tag-strat { background: #e0f2fe; color: #075985; }
+        .tag-priority { background: var(--brand-primary); color: white; }
+        
+        .card h3 {
+            margin: 0 0 0.85rem 0;
+            font-size: 1.15rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        .card h3 a { color: var(--text-main); text-decoration: none; }
+        .card h3 a:hover { color: var(--accent); }
+        
+        .card p {
+            color: #475569;
+            font-size: 0.925rem;
+            margin: 0 0 1.5rem 0;
+            flex-grow: 1;
+        }
+        .card-footer {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        /* Highlighter Implementation */
+        .highlight-brand {
+            background-color: var(--highlight);
+            color: inherit;
+            padding: 0 2px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+        .no-data {
+            color: var(--text-muted);
+            font-style: italic;
+            grid-column: 1 / -1;
+            padding: 3rem;
+            text-align: center;
+            background: var(--surface);
+            border-radius: 12px;
+            border: 2px dashed var(--border);
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="navbar-container">
+        <div>
+            <h1>CPG Europe Daily Intelligence</h1>
+            <p>Portfolio & Competitor Intelligence Portal</p>
+        </div>
+        <div class="meta-badge">
+            Intel Edition: 18 November 2026<br>
+            Data Refresh: 18 Nov 2026 08:41 UTC
+        </div>
+    </div>
+</div>
+
+<div class="main-layout">
+
+    <!-- EXECUTIVE SYNTHESIS MATRICES -->
+    <div class="synthesis-container">
+        <div class="synthesis-title">🎯 Macro Executive Summary & Portfolio Shifts</div>
+        <ul class="synthesis-list">
+            <li><strong>High-Profile Competitive Activity:</strong> Core industry movements detected today from primary tracked peer portfolios: <strong>Coca-Cola, Mondelez, PepsiCo</strong>.</li>
+            <li><strong>Category Distribution Trend:</strong> Structural tracking indicates an emphasis on <strong>General FMCG</strong> profiles, signaling accelerated regional development.</li>
+            <li><strong>Geographic Hub Focus:</strong> Regional concentration patterns pinpoint elevated regulatory, strategic, or rollout tracking targeting the <strong>United Kingdom</strong> marketplace.</li>
+        </ul>
+    </div>
+
+    <!-- HIGH PRIORITY STRATEGIC INTEL -->
+    <section>
+        <div class="section-title">⚡ High-Priority Competitive Threats & Top Stories</div>
+        <div class="grid">
+
+            <div class="card" style="border-top: 4px solid var(--brand-primary);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Alert</span>
+                        <span class="tag tag-strat">Market Update</span>
+                        <span class="tag">France</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/a-brands/princes-group-to-acquire-some-french-food-brands-from-mondelez-326274" target="_blank">Princes Group To Acquire Some French Food Brands From <mark class="highlight-brand">Mondelēz</mark></a></h3>
+                    <p>Princes Group plans to acquire <mark class="highlight-brand">Mondelēz</mark>'s French bread substitutes and cereal bars businesses for an enterprise value of €80 million.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                    <span>⏱️ 1 min read</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--brand-primary);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Alert</span>
+                        <span class="tag tag-strat">Market Update</span>
+                        <span class="tag">Europe</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/supply-chain/lidl-opens-logistics-hub-in-bosnia-and-herzegovina-326077" target="_blank">Lidl Opens Logistics Hub In Bosnia and Herzegovina</a></h3>
+                    <p>Lidl has inaugurated its first logistics centre in Bosnia and Herzegovina, located in Lepenica within the municipality of Kiseljak.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                    <span>⏱️ 1 min read</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--brand-primary);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Alert</span>
+                        <span class="tag tag-ma">M&A Activity</span>
+                        <span class="tag">Europe</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/retail/alimentation-couche-tard-gets-regulatory-green-light-for-zabka-deal-326279" target="_blank">Alimentation Couche-Tard Gets Regulatory Green Light For Żabka Deal</a></h3>
+                    <p>Alimentation Couche-Tard has announced that Poland's competition watchdog UOKiK has cleared its proposed acquisition of Żabka Group.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                    <span>⏱️ 1 min read</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--brand-primary);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Alert</span>
+                        <span class="tag tag-ma">M&A Activity</span>
+                        <span class="tag">Europe</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/a-brands/sixth-street-acquires-350m-minority-stake-in-us-meat-snack-brand-chomps-326340" target="_blank">Sixth Street Acquires $350m Minority Stake In US Meat Snack Brand Chomps</a></h3>
+                    <p>Global investment firm Sixth Street has acquired a minority stake in US meat snack brand Chomps for $350 million.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                    <span>⏱️ 1 min read</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--brand-primary);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Alert</span>
+                        <span class="tag tag-ma">M&A Activity</span>
+                        <span class="tag">Italy</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/retail/newprinces-9m-revenues-jump-135-past-e4-5bn-boosted-by-acquisitions-325870" target="_blank">NewPrinces’ 9M Revenue Jumps 135%, Boosted By Acquisitions</a></h3>
+                    <p>Italian group NewPrinces reported consolidated revenues of €4.5 billion for the first nine months of 2026, up 135% year on year.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                    <span>⏱️ 1 min read</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--brand-primary);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Alert</span>
+                        <span class="tag tag-launch">Product Launch</span>
+                        <span class="tag">Europe</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/private-label/tesco-ireland-introduces-protein-and-fibre-rich-wholesum-meals-325596" target="_blank">Tesco Ireland Introduces Protein- And Fibre-Rich ‘Wholesum’ Meals</a></h3>
+                    <p>Tesco Ireland is launching a new range of nutrient-dense ready meals, responding to changing consumer habits.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                    <span>⏱️ 1 min read</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--brand-primary);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Alert</span>
+                        <span class="tag tag-strat">Market Update</span>
+                        <span class="tag">Europe</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/private-label/lidl-gbs-premium-private-label-range-exceeds-1bn-in-annual-sales-325556" target="_blank">Lidl GB's Premium Private-Label Range Exceeds £1bn In Annual Sales</a></h3>
+                    <p>Lidl GB has announced that its premium own-label range, Deluxe, has exceeded the £1 billion milestone in annual sales for the first time.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                    <span>⏱️ 1 min read</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--brand-primary);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Alert</span>
+                        <span class="tag tag-strat">Market Update</span>
+                        <span class="tag">Europe</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/features/bel-groups-cecile-beliot-zind-on-the-role-of-retailers-in-shaping-a-healthier-planet-294521" target="_blank"><mark class="highlight-brand">Bel group</mark>’s Cécile Beliot-Zind On The Role Of Retailers In Shaping A Healthier Planet</a></h3>
+                    <p>Cécile Beliot-Zind, chief executive of <mark class="highlight-brand">Bel group</mark>, tells Rose Costello that retailers are key to achieving a healthier planet.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                    <span>⏱️ 1 min read</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--brand-primary);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Alert</span>
+                        <span class="tag tag-strat">Market Update</span>
+                        <span class="tag">Europe</span>
+                        <span class="tag">Dairy & Yogurt</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/features/arlas-sustainable-ambition-peter-giortz-carlsen-talks-to-esm-273949" target="_blank"><mark class="highlight-brand">Arla</mark>'s Sustainable Ambition – Peter Giørtz-Carlsen Talks To ESM</a></h3>
+                    <p>Sustainability and profitability should go hand in hand, as Peter Giørtz-Carlsen, chief commercial officer at dairy giant <mark class="highlight-brand">Arla</mark>, explains.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                    <span>⏱️ 1 min read</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--brand-primary);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Alert</span>
+                        <span class="tag tag-strat">Market Update</span>
+                        <span class="tag">Europe</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/features/building-value-and-values-danones-pablo-perversi-and-ayla-ziz-talk-to-esm-273935" target="_blank">Building Value And Values – <mark class="highlight-brand">Danone</mark>’s Pablo Perversi And Ayla Ziz Talk To ESM</a></h3>
+                    <p>ESM’s Stephen Wynne-Jones meets Pablo Perversi, President Europe <mark class="highlight-brand">Danone</mark>, and Ayla Ziz, SVP Sales, Customer & Commercial Europe <mark class="highlight-brand">Danone</mark>.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                    <span>⏱️ 1 min read</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--brand-primary);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Alert</span>
+                        <span class="tag tag-strat">Market Update</span>
+                        <span class="tag">United Kingdom</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/a-brands/uk-watchdog-demands-competition-remedies-in-unilever-mccormick-food-deal-325852" target="_blank">UK Watchdog Demands Competition Remedies In <mark class="highlight-brand">Unilever</mark>-McCormick Food Deal</a></h3>
+                    <p>Britain's competition watchdog told food giant <mark class="highlight-brand">Unilever</mark> and US spice maker McCormick they must address some competition concerns.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                    <span>⏱️ 1 min read</span>
+                </div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--brand-primary);">
+                <div>
+                    <div class="card-tags">
+                        <span class="tag tag-priority">Alert</span>
+                        <span class="tag tag-strat">Market Update</span>
+                        <span class="tag">Europe</span>
+                        <span class="tag">General FMCG</span>
+                    </div>
+                    <h3><a href="https://www.esmmagazine.com/a-brands/pepsico-to-cut-some-jobs-in-north-america-325813" target="_blank"><mark class="highlight-brand">Pepsico</mark> To Cut Some Jobs In North America</a></h3>
+                    <p><mark class="highlight-brand">Pepsico</mark> is cutting some jobs in its North America food and beverage business as part of a plan to streamline the unit.</p>
+                </div>
+                <div class="card-footer">
+                    <span>Source: ESM Magazine</span>
+                    <span>⏱️ 1 min read</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GEOGRAPHIC SUB-MARKETS -->
+    <section>
+        <div class="section-title">📍 Regional Market Activity</div>
+
+        <h3 style="margin: 2rem 0 1rem 0; font-size: 1.25rem; color: var(--brand-primary); font-weight:700;">United Kingdom Market Updates</h3>
+        <div class="grid" style="margin-bottom: 2.5rem;">
+    
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Market Update</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/a-brands/uk-tobacco-maker-imperial-brands-to-cut-up-to-4600-jobs-by-2030-326270" target="_blank">UK Tobacco Maker Imperial Brands To Cut Up To 4,600 Jobs By 2030</a></h3>
+                        <p>Imperial Brands will cut up to 4,600 jobs, or nearly a fifth of its workforce, by 2030 as the tobacco company tightens its grip on costs.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Market Update</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/supply-chain/ukraine-grain-harvest-could-halve-in-2027-due-to-closed-ports-minister-says-326336" target="_blank">Ukraine Grain Harvest Could Halve In 2027 Due To Closed Ports, Minister Says</a></h3>
+                        <p>Ukraine's grain harvest could halve next year from if farmers scale back plantings because they are unable to export the crop.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Market Update</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/retail/uk-shoppers-split-between-value-and-premium-niq-326264" target="_blank">UK Shoppers Split Between Value And Premium - NIQ</a></h3>
+                        <p>UK shoppers increasingly choose value or premium products over mainstream-priced FMCG products, according to NielsenIQ (NIQ).</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Market Update</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/drinks/waitrose-brings-regenerative-wheat-to-the-spirits-aisle-325374" target="_blank">Waitrose Brings Regenerative Wheat To The Spirits Aisle</a></h3>
+                        <p>UK Waitrose & Partners retailer has rolled out a new own-brand vodka and gin made from crops grown on its own farm.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Market Update</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/packaging-design/uk-government-announces-packaging-fee-relief-for-pubs-and-restaurants-326123" target="_blank">UK Government Announces Packaging Fee Relief For Pubs And Restaurants</a></h3>
+                        <p>The UK government plans to cut double-charging for recycling the same packaging, to support restaurants, pubs and hospitality.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Market Update</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://news.google.com/rss/articles/CBMikwFBVV95cUxQeFFpVk5OYmlOYnB5N0J1SVRVT2s0a3hiX2tBMUcxNWlKZkttX1JpNVVlbDNXbFRaV0VlTVQ5Z3ZubEhnRHA2aHNGYWRBOVNJQUk3dHd4QklxTjAzMmpzX0FUdXg4b0dEWDdDbHhjcUF6SEN3alFGbDFrY2lPbEgzeEVxczdXRVY2ZVRheXZrUU5RTzA?oc=5" target="_blank">UK Shoppers Shift Towards Value And Premium Products, NIQ Says - ESM Magazine</a></h3>
+                        <p>UK Shoppers Shift Towards Value And Premium Products, NIQ Says&nbsp;&nbsp;ESM Magazine</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: "UK FMCG when:1d" - Google News</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div></div>
+        <h3 style="margin: 2rem 0 1rem 0; font-size: 1.25rem; color: var(--brand-primary); font-weight:700;">France Market Updates</h3>
+        <div class="grid" style="margin-bottom: 2.5rem;">
+    
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Market Update</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/retail/french-consumers-spread-grocery-spend-across-more-retailers-and-trips-326332" target="_blank">French Consumers Spread Grocery Spend Across More Retailers And Trips</a></h3>
+                        <p>French shoppers are making more frequent grocery trips and visiting more retailers, driving greater fragmentation in the grocery market.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Market Update</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/drinks/france-lifts-wine-output-forecast-despite-historically-weak-crop-325566" target="_blank">France Lifts Wine Output Forecast Despite Historically Weak Crop</a></h3>
+                        <p>France raised this year's wine production forecast after yields proved better than expected in several major regions.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Market Update</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/technology/french-officials-accuse-iran-of-being-behind-refrigerator-hacks-325745" target="_blank">French Officials Accuse Iran Of Being Behind Refrigerator Hacks</a></h3>
+                        <p>French officials accused Iran of responsibility for cyberattacks on commercial refrigerators and freezers across France last month.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Market Update</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://news.google.com/rss/articles/CBMisAFBVV95cUxQcUhVSjVZcWhWZk9yUVVWTUphQnpSU2NZZm1LYUx1a0dfc2xwaHJ5Ul9EdkNTOC1pNV9mTm01VHpyMW5wWmZuX2EwNGt4ZGJvY3lRLUp6NkVUaTE4SWotX2RfcjQ3Tm5LNVktR29DSUk3b1Z6RnV3RUhxNXN0NFVSNEpWQUI2aHNMUDJ2UFozNkNaVkRZb3BSdG5CME5kTEtLeTFkY180ZlRUdlRMTWs5TQ?oc=5" target="_blank">France’s Grocery Market Becomes More Fragmented – Worldpanel - ESM Magazine</a></h3>
+                        <p>France’s Grocery Market Becomes More Fragmented – Worldpanel&nbsp;&nbsp;ESM Magazine</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: "France FMCG when:1d" - Google News</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div></div>
+        <h3 style="margin: 2rem 0 1rem 0; font-size: 1.25rem; color: var(--brand-primary); font-weight:700;">Germany Market Updates</h3>
+        <div class="grid" style="margin-bottom: 2.5rem;">
+    
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Market Update</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/retail/german-retail-sector-expects-record-turnover-for-black-friday-and-cyber-monday-hde-326191" target="_blank">German Retail Sector Expects 'Record' Turnover For Black Friday And Cyber Monday – HDE</a></h3>
+                        <p>The German retail sector is forecast to generate sales of €6.2 billion for Black Friday and Cyber Monday this year, according to HDE.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Market Update</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/a-brands/seeberger-shaping-the-future-of-snacking-298482" target="_blank">Seeberger - Shaping The Future Of Snacking</a></h3>
+                        <p>Founded in Ulm in Germany, Seeberger has been dedicated to premium snacking expertise for more than 180 years.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div></div>
+        <h3 style="margin: 2rem 0 1rem 0; font-size: 1.25rem; color: var(--brand-primary); font-weight:700;">Netherlands Market Updates</h3>
+        <div class="grid" style="margin-bottom: 2.5rem;">
+    
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-launch">Product Launch</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/retail/albert-heijn-expands-alcohol-free-range-with-50-new-products-326235" target="_blank">Albert Heijn Expands Alcohol-Free Range With 50 New Products</a></h3>
+                        <p>Dutch retailer Albert Heijn has announced plans to launch 50 new non-alcoholic drink SKUs, responding to changing consumer trends.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Corporate Strategy</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/retail/european-expansion-boosts-actions-9m-sales-growth-by-14-to-e12-8bn-326073" target="_blank">European Expansion Boosts Action’s 9M Sales Growth By 14%</a></h3>
+                        <p>Dutch non-food retailer Action recorded a 14% rise in net sales, to €12.8 billion, buoyed by rising footfall and store expansion.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Market Update</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/retail/ahold-delhaizes-wouter-kolk-talks-to-esm-as-he-departs-the-dutch-retailer-273866" target="_blank">Ahold Delhaize's Wouter Kolk Talks To ESM As He Departs The Dutch Retailer</a></h3>
+                        <p>ESM catches up with Wouter Kolk as he steps down from the role of CEO of Ahold Delhaize Europe & Indonesia.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Market Update</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://news.google.com/rss/articles/CBMirAFBVV95cUxPc1VneVZveml0akxWYmx0SUtDT2xCUXlPQzVabjQxZUVxc195Z3M3d3h5bmdjTkF4b1BCZFVCNGNJdlFHLWJGMVcxeUltOHVkakVoYTEzWUJYZG5oNUZJQ19VUzZwOEdRbkdyUU91STdMaHh0SUZqcVRLYi1mdVE4UXJsX2VrNi05Q2xwZWhQU1JRRFAtdlNUdThQNTdmcWF4anhMMUd0Q3I5Zl8x0gGsAUFVX3lxTE9zVWd5Vm96aXRqTFZibHRJS0NPbEJReU9DNVpuNDFlRXFzX3lnczd3eHluZ2NOQXhvUEJkVUI0Y0l2UUctYkYxVzF5SW04dWRqRWhhMTNZQlhkbmg1RklDX1VTNnA4R1FuR3JRT3VJN0xoeHRJRmpxVEtiLWZ1UThRcmxfZWs2LTlDbHBlaFBTUlFEUC12U1R1OFA1N2ZxYXhqeEwxR3RDcjlmXzE?oc=5" target="_blank">Romania-Netherlands Bilateral Trade Surges Sevenfold in 20 Years - The Romania Journal</a></h3>
+                        <p>Romania-Netherlands Bilateral Trade Surges Sevenfold in 20 Years&nbsp;&nbsp;The Romania Journal</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: "Netherlands FMCG when:1d" - Google News</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div></div>
+        <h3 style="margin: 2rem 0 1rem 0; font-size: 1.25rem; color: var(--brand-primary); font-weight:700;">Italy Market Updates</h3>
+        <div class="grid" style="margin-bottom: 2.5rem;">
+    
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Corporate Strategy</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/fresh-produce/coop-italia-origin-italia-back-certified-italian-produce-in-new-partnership-324754" target="_blank">Coop Italia, Origin Italia Back Certified Italian Produce In New Partnership</a></h3>
+                        <p>Coop Italia and Origin Italia, the association of Italian Geographical Indication consortia, are promoting Italian products.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div></div>
+        <h3 style="margin: 2rem 0 1rem 0; font-size: 1.25rem; color: var(--brand-primary); font-weight:700;">Spain Market Updates</h3>
+        <div class="grid" style="margin-bottom: 2.5rem;">
+    
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Market Update</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/retail/caprabo-appoints-idoia-sola-mateo-as-general-manager-326316" target="_blank">Caprabo Appoints Idoia Sola Mateo As General Manager</a></h3>
+                        <p>Spain's Caprabo has appointed Idoia Sola Mateo as its new general manager, succeeding Edorta Juaristi Altuna after six years at the helm.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Market Update</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/retail/proximity-price-and-quality-key-for-spanish-consumers-in-2025-study-finds-324462" target="_blank">Proximity, Price And Quality Key For Spanish Consumers In 2025, Study Finds</a></h3>
+                        <p>Price emerged as the primary decision-maker for Spanish supermarket shoppers in 2025, according to an MPAC survey.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Market Update</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://www.esmmagazine.com/supply-chain/spars-wholesaler-grupo-upper-opens-new-logistics-centre-in-spain-325594" target="_blank">SPAR’s Wholesaler Grupo Upper Opens New Logistics Centre In Spain</a></h3>
+                        <p>SPAR Spain wholesaler Grupo Upper has opened a new logistics centre at the Los Camachos industrial estate in Cartagena.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: ESM Magazine</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-tags">
+                            <span class="tag tag-strat">Market Update</span>
+                            <span class="tag">General FMCG</span>
+                        </div>
+                        <h3><a href="https://news.google.com/rss/articles/CBMiigFBVV95cUxPZUNwOWJFVFZEYm5TeG5INTBMUWdBb2M5dnhPSTF4RkJiR041YWtMeUl2SHl3RUVnMXhwTDF6NFRGZ0ZOY3Y0WV9iX3ZFb1REWlVMRThOSEt5R1Vodk9OVkQwVmxUb05tcTBHV0loMFVLYWJwS1pkZ2xkR1NOWlpIdEFYY0lWNUlTa0E?oc=5" target="_blank">Abascal’s wife received €210.71 in thermal aid - RUSSPAIN.com</a></h3>
+                        <p>Abascal’s wife received €210.71 in thermal aid&nbsp;&nbsp;RUSSPAIN.com</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>Source: "Spain FMCG when:1d" - Google News</span>
+                        <span>⏱️ 1 min read</span>
+                    </div>
+                </div></div>
+        <h3 style="margin: 2rem 0 1rem 0; font-size: 1.25rem; color: var(--brand-primary); font-weight:700;">Greece Market Updates</h3>
+        <div class="grid" style="margin-bottom: 2.5rem;">
+                <div class="no-data">No regional localized updates logged for this market matrix.</div></div>
+    </section>
+</div>
+
+</body>
+</html>
